@@ -7,7 +7,7 @@ class Knight(Piece):
         self.image = "knight_black.png"
         if color == Color.WHITE:
             self.image = "knight_white.png"
-        super().__init__(color, self.image, pos, [6, 15, 17, 10, -6, -15, -17, -10])
+        super().__init__(color, self.image, pos, [6, 15, 17, 10, -6, -15, -17, -10], False)
 
     def __str__(self):
         if self.color == Color.WHITE:
