@@ -1,4 +1,6 @@
 from Color import Color
+from HelperClasses.Chess_Initializer import ChessInitializer
+from HelperClasses.Move import Move
 from Pieces.Bishop import Bishop
 from Pieces.King import King
 from Pieces.Knight import Knight
@@ -9,49 +11,92 @@ from Pieces.Rook import Rook
 
 class Chess:
     def __init__(self, FEN):
-        self.board = [[None for i in range(8)] for j in range(8)]
-        self.pieces = []
+        self.initializer = ChessInitializer(FEN)
+        self.board = self.initializer.board
+        self.pieces = self.initializer.pieces
+        self.current_turn = Color.WHITE
 
-        self.load_from_FEN(FEN)
+    def get_all_legal_moves(self):
+        for piece in self.pieces:
+            if piece.color != self.current_turn:
+                continue
+            self.get_legal_moves(piece)
+    def get_legal_moves(self, piece):
+        moves = []
+        print(piece)
+        if piece.is_sliding_piece:
+            for direction in piece.directions:
+                print(f"direction: {direction} | {self.get_squares_to_edge(piece.pos, direction)}")
+                for i in range(self.get_squares_to_edge(piece.pos, direction)):
+                    print(f"looking at {piece.pos + (i+1) * direction}")
+                    x, y = self.index_to_cords(piece.pos + (i+1) * direction)
+                    if self.board[y][x]:
+                        if self.board[y][x].color == piece.color:
+                            print("piece has the same color")
+                            print(x, y)
+                            print(self.board[y][x])
+                            print(self.board[y][x].color, piece.color)
 
-    def load_from_FEN(self, FEN):
-        x = 0
-        y = 0
-        for sign in FEN:
-            if sign == '/':
-                x = 0
-                y += 1
+                            break
 
-            elif sign.isnumeric():
-                x += int(sign)
+                        if self.board[y][x].color != piece.color:
+                            moves.append(Move(piece.pos, piece.pos + (i+1) * direction, self.board[y][x]))
+                            print("piece has different color. im gonna take it")
+                            break
 
-            else:
-                self.Add_Piece(sign, x, y)
-                x += 1
 
-    def Add_Piece(self, piece, x, y):
-        color = Color.BLACK
-        if piece.isupper():
-            color = Color.WHITE
-        piece = piece.upper()
 
-        if piece == 'P':
-            self.board[y][x] = Pawn(color, self.cords_to_index(x, y))
+                    else:
+                        moves.append(Move(piece.pos, piece.pos + (i+1) * direction, None))
+                        print("no piece at this square")
 
-        elif piece == 'R':
-            self.board[y][x] = Rook(color, self.cords_to_index(x, y))
+        return moves
 
-        elif piece == 'K':
-            self.board[y][x] = King(color, self.cords_to_index(x, y))
+    def get_piece(self, x, y):
+        return self.board[y][x]
 
-        elif piece == 'N':
-            self.board[y][x] = Knight(color, self.cords_to_index(x, y))
+    def get_squares_to_edge(self, position, direction):
+        distance = 0
 
-        elif piece == 'Q':
-            self.board[y][x] = Queen(color, self.cords_to_index(x, y))
+        if direction == 1 or direction == -1:
+            return self.get_squares_horizontal(position, direction)
 
-        elif piece == 'B':
-            self.board[y][x] = Bishop(color, self.cords_to_index(x, y))
+        if direction == 8 or direction == -8:
+            return self.get_squares_vertical(position, direction)
+
+        if direction == 7 or direction == -7 or direction == 9 or direction == -9:
+            vertical = -8 if direction < 0 else 8
+            horizontal = 1 if direction == 9 or direction == -7 else -1
+            return min(self.get_squares_vertical(position, vertical), self.get_squares_horizontal(position, horizontal))
+
+    def get_squares_vertical(self, position, direction):
+        if not (direction == 8 or direction == -8):
+            print("invalid direction")
+            return
+        squares = 0
+        while 0 <= position + direction < 64:
+            squares += 1
+            position += direction
+
+        return squares
+
+    def get_squares_horizontal(self, position, direction):
+        if not (direction == 1 or direction == -1):
+            print("invalid direction")
+            return
+
+        squares = 0
+        position %= 8
+        while True:
+            if position == 0 or position == 7:
+                return squares
+            squares += 1
+            position += direction
+
+    def index_to_cords(self, index):
+        x = index % 8
+        y = 7 - int(index / 8)
+        return x, y
 
     def cords_to_index(self, x, y):
         index = 56 - y * 8 + (x % 8)
