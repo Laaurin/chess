@@ -8,9 +8,11 @@ from Pieces.Rook import Rook
 
 
 class Chess:
-    def __init__(self):
+    def __init__(self, FEN):
         self.board = [[None for i in range(8)] for j in range(8)]
         self.pieces = []
+
+        self.load_from_FEN(FEN)
 
     def load_from_FEN(self, FEN):
         x = 0
