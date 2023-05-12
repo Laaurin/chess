@@ -9,7 +9,7 @@ from Pieces.Rook import Rook
 
 class Chess:
     def __init__(self, FEN):
-        self.board = [[None for i in range(8)] for j in range(8)]
+        self.board = [[None] * 8 for _ in range(8)]
         self.pieces = []
 
         self.load_from_FEN(FEN)
@@ -52,6 +52,8 @@ class Chess:
 
         elif piece == 'B':
             self.board[y][x] = Bishop(color, self.cords_to_index(x, y))
+
+        self.pieces.append(self.board[y][x])
 
     def cords_to_index(self, x, y):
         index = 56 - y * 8 + (x % 8)
