@@ -9,7 +9,11 @@ class Chess:
         self.initializer = ChessInitializer(FEN)
         self.board = self.initializer.board
         self.pieces = self.initializer.pieces
-        self.current_turn = Color.WHITE
+        self.current_turn = self.initializer.current_turn
+        self.K = self.initializer.K
+        self.Q = self.initializer.Q
+        self.k = self.initializer.k
+        self.q = self.initializer.q
 
     def get_all_legal_moves(self):
         for piece in self.pieces:
@@ -56,7 +60,6 @@ class Chess:
             if self.board[y][x]:
                 if self.board[y][x].color != self.current_turn:
                     moves.append(Move(piece.pos, piece.pos + direction, self.board[y][x]))
-
             else:
                 moves.append(Move(piece.pos, piece.pos + direction, None))
 
@@ -109,7 +112,6 @@ class Chess:
         self.board[y_destination][x_destination].pos = destination_square
 
         self.board[y_start][x_start] = None
-
 
     def get_squares_to_edge(self, position, direction):
         distance = 0

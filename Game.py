@@ -33,9 +33,6 @@ class Game:
                     piece = self.chess.get_piece(cord_x, cord_y)
 
                     destination_square = self.calculation.cords_to_index(cord_x, cord_y)
-                    print(available_moves)
-                    print(destination_square)
-                    print()
                     if destination_square in available_moves:
                         cord_x, cord_y = self.calculation.pixel_to_cords(self.pos_1)
                         start_square = self.calculation.cords_to_index(cord_x, cord_y)
