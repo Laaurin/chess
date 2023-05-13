@@ -4,10 +4,17 @@ from Color import Color
 
 class Pawn(Piece):
     def __init__(self, color, pos):
-        self.image = "felix.png"
+        image = "pawn_black.png"
+        directions = [-8]
+        self.start_rank = 1
+
         if color == Color.WHITE:
-            self.image = "pawn_white.png"
-        super().__init__(color, self.image, pos, [8, 16, 7, 9], False)
+            image = "pawn_white.png"
+            directions = [8]
+            self.start_rank = 6
+
+
+        super().__init__(color, image, pos, directions, False)
 
     def __str__(self):
         if self.color == Color.WHITE:
