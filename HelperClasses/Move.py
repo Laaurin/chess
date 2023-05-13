@@ -1,5 +1,5 @@
 class Move:
-    def __init__(self, start_square, destination_square, captured_piece):
+    def __init__(self, start_square, destination_square, captured_piece=None):
         self.start_square = start_square
         self.destination_square = destination_square
         self.captured_piece = captured_piece

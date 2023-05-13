@@ -6,7 +6,7 @@ class Visuals:
         pygame.init()
 
         self.calculation = calculation
-        self.width = 800
+        self.width = calculation.width
         self.height = self.width
         self.offset_vertical = 0
         self.offset_horizontal = 0
@@ -59,7 +59,7 @@ class Visuals:
 
     def highlight_possible_move(self, index):
         x, y = self.index_to_pixel(index)
-        pygame.draw.circle(self.screen, "blue", (int(x + self.calculation.tile_size / 2), int(y + self.calculation.tile_size / 2)),
+        pygame.draw.circle(self.screen, (46, 204, 113), (int(x + self.calculation.tile_size / 2), int(y + self.calculation.tile_size / 2)),
                            self.calculation.tile_size / 8)
     def display_piece(self, piece):
         picture = pygame.image.load(piece.image)

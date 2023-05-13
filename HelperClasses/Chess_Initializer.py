@@ -12,11 +12,18 @@ class ChessInitializer:
         self.board = [[None] * 8 for _ in range(8)]
         self.pieces = []
         self.load_from_FEN(FEN)
+        self.current_turn = Color.WHITE
+        self.K = False
+        self.Q = False
+        self.k = False
+        self.q = False
 
     def load_from_FEN(self, FEN):
         x = 0
         y = 0
-        for sign in FEN:
+        a = "fasdf"
+        fen = FEN.split(' ')
+        for sign in fen[0]:
             if sign == '/':
                 x = 0
                 y += 1
@@ -28,6 +35,21 @@ class ChessInitializer:
                 self.add_piece(sign, x, y)
                 x += 1
 
+        if fen[1] == 'b':
+            self.current_turn = Color.BLACK
+
+        for i in fen[2]:
+            if i == 'K':
+                self.K = True
+
+            elif i == 'Q':
+                self.Q = True
+
+            elif i == 'k':
+                self.k = True
+
+            elif i == 'q':
+                self.q = True
     def add_piece(self, piece_char, x, y):
         color = self.get_color_from_char(piece_char)
 
