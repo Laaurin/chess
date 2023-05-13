@@ -31,45 +31,36 @@ class Chess:
     def get_sliding_moves(self, piece):
         moves = []
         for direction in piece.directions:
-            print(f"direction: {direction} | {self.get_squares_to_edge(piece.pos, direction)}")
             for i in range(self.get_squares_to_edge(piece.pos, direction)):
-                print(f"looking at {piece.pos + (i+1) * direction}")
-                x, y = self.index_to_cords(piece.pos + (i+1) * direction)
+                x, y = self.index_to_cords(piece.pos + (i + 1) * direction)
                 if self.board[y][x]:
                     if self.board[y][x].color == self.current_turn:
-                        print("piece has the same color")
                         break
 
                     if self.board[y][x].color != self.current_turn:
-                        moves.append(Move(piece.pos, piece.pos + (i+1) * direction, self.board[y][x]))
-                        print("piece has different color. im gonna take it")
+                        moves.append(Move(piece.pos, piece.pos + (i + 1) * direction, self.board[y][x]))
                         break
 
                 else:
-                    moves.append(Move(piece.pos, piece.pos + (i+1) * direction, None))
-                    print("no piece at this square")
+                    moves.append(Move(piece.pos, piece.pos + (i + 1) * direction, None))
 
         return moves
 
     def get_non_sliding_moves(self, piece):
         moves = []
         for direction in piece.directions:
-            print(f"looking at {piece.pos + direction}")
+            new_pos = piece.pos + direction
+            if not 0 <= new_pos <= 63:
+                continue
             x, y = self.index_to_cords(piece.pos + direction)
             if self.board[y][x]:
-                if self.board[y][x].color == self.current_turn:
-                    print("piece has the same color")
-
                 if self.board[y][x].color != self.current_turn:
                     moves.append(Move(piece.pos, piece.pos + direction, self.board[y][x]))
-                    print("piece has different color. im gonna take it")
 
             else:
                 moves.append(Move(piece.pos, piece.pos + direction, None))
-                print("no piece at this square")
 
         return moves
-
 
     def get_pawn_moves(self, pawn):
         moves = []
@@ -82,7 +73,6 @@ class Chess:
             if 0 <= new_pos <= 63 and self.board[y][x] and self.board[y][x].color != self.current_turn:
                 moves.append(Move(pawn.pos, new_pos, self.board[y][x]))
 
-
         new_pos = pawn.pos + direction
 
         x, y = self.index_to_cords(new_pos)
@@ -91,10 +81,7 @@ class Chess:
 
         moves.append(Move(pawn.pos, new_pos))
 
-
         if curr_rank == pawn.start_rank:
-            print(curr_rank, pawn.start_rank)
-
             # check if pawn can move 2 squares forward
             new_pos = pawn.pos + 2 * direction
             x, y = self.index_to_cords(new_pos)
@@ -104,20 +91,25 @@ class Chess:
 
         # check for diagonal captures
 
-
         return moves
 
     def get_piece(self, x, y):
         return self.board[y][x]
 
-    def move(self, move):
-        x_start, y_start = self.index_to_cords(move.start_square)
-        x_destination, y_destination = self.index_to_cords(move.destination_square)
+    def move(self, start_square, destination_square):
+        x_start, y_start = self.index_to_cords(start_square)
+        print(x_start, y_start)
+        x_destination, y_destination = self.index_to_cords(destination_square)
 
+        for piece in self.pieces:
+            if piece.pos == destination_square:
+                self.pieces.remove(piece)
+                break
         self.board[y_destination][x_destination] = self.board[y_start][x_start]
+        self.board[y_destination][x_destination].pos = destination_square
+
         self.board[y_start][x_start] = None
 
-        self.board[y_destination][x_destination].pos = move.destination_square
 
     def get_squares_to_edge(self, position, direction):
         distance = 0
@@ -156,6 +148,12 @@ class Chess:
                 return squares
             squares += 1
             position += direction
+
+    def switch_turn(self):
+        if self.current_turn == Color.WHITE:
+            self.current_turn = Color.BLACK
+        else:
+            self.current_turn = Color.WHITE
 
     def index_to_cords(self, index):
         x = index % 8
