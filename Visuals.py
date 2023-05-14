@@ -2,10 +2,8 @@ import pygame
 
 
 class Visuals:
-    def __init__(self, calculation):
+    def __init__(self):
         pygame.init()
-
-        self.calculation = calculation
         self.width = calculation.width
         self.height = self.width
         self.offset_vertical = 0

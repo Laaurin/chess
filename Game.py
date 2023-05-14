@@ -1,15 +1,15 @@
 import pygame
 
-from HelperClasses.Calculation import Calculation
+from HelperClasses.Calculation import *
 from Chess import Chess
 from Visuals import Visuals
 
 
 class Game:
     def __init__(self, width=800, height=800, FEN="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"):
-        self.calculation = Calculation(width, height, 0, 0)
+
         self.chess = Chess(FEN)
-        self.visuals = Visuals(self.calculation)
+        self.visuals = Visuals()
 
         self.pos_1 = (-1, -1)
         self.pos_2 = (-1, -1)
@@ -30,9 +30,9 @@ class Game:
                     if not self.calculation.cords_inside_board(pos):
                         continue
                     cord_x, cord_y = self.calculation.pixel_to_cords(pos)
-                    piece = self.chess.get_piece(cord_x, cord_y)
+                    piece = self.chess.board.get_piece(cord_x, cord_y)
 
-                    destination_square = self.calculation.cords_to_index(cord_x, cord_y)
+                    destination_square = cords_to_index(cord_x, cord_y)
                     if destination_square in available_moves:
                         cord_x, cord_y = self.calculation.pixel_to_cords(self.pos_1)
                         start_square = self.calculation.cords_to_index(cord_x, cord_y)
