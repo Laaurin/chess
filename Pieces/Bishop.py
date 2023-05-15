@@ -9,6 +9,9 @@ class Bishop(Piece):
             self.image = "bishop_white.png"
         super().__init__(color, self.image, pos, [7, 9, -7, -9], True)
 
+    def get_legal_moves(self, board, current_turn):
+        return super().get_sliding_moves(board, current_turn)
+
     def __str__(self):
         if self.color == Color.WHITE:
             return 'B'
