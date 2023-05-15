@@ -1,23 +1,20 @@
 import pygame
+from HelperClasses import Calculation
+from config import *
 
 
 class Visuals:
     def __init__(self):
         pygame.init()
-        self.width = calculation.width
-        self.height = self.width
-        self.offset_vertical = 0
-        self.offset_horizontal = 0
-        self.tile_size = (min(self.height, self.width) - 2 * max(self.offset_vertical, self.offset_horizontal)) / 8
-
-        self.screen = pygame.display.set_mode((self.width, self.height))
-
+        self.tile_size = (min(WINDOW_HEIGHT, WINDOW_WIDTH) - 2 * max(OFFSET_VERTICAL, OFFSET_HORIZONTAL)) / 8
+        self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         self.color_white = "#f0e2a3"
         self.color_black = "#084d17"
 
     def update(self, pieces):
         self.draw_board()
         self.draw_pieces(pieces)
+
     def draw_board(self):
         for i in range(8):
             for j in range(8):
@@ -26,8 +23,8 @@ class Visuals:
                 else:
                     color = self.color_black
                 pygame.draw.rect(self.screen, color,
-                                 (self.offset_vertical + j * self.tile_size,
-                                  self.offset_horizontal + i * self.tile_size,
+                                 (OFFSET_VERTICAL + j * self.tile_size,
+                                  OFFSET_HORIZONTAL + i * self.tile_size,
                                   self.tile_size, self.tile_size))
 
     def draw_pieces(self, pieces):
@@ -43,38 +40,31 @@ class Visuals:
                 self.highlight_possible_move(move.destination_square)
 
     def highlight_square(self, pos):
-        x, y = self.calculation.get_square_cords_from_cords(pos)
+        x, y = Calculation.get_square_cords_from_cords(pos)
 
         rect = pygame.Rect(x, y, self.tile_size, self.tile_size)
         surface = pygame.Surface((self.tile_size, self.tile_size), pygame.SRCALPHA)
         surface.fill((46, 204, 113, 128))
         self.screen.blit(surface, rect)
+
     def highlight_possible_capture(self, index):
-        x, y = self.index_to_pixel(index)
+        x, y = Calculation.index_to_pixel(index)
         pygame.draw.rect(self.screen, "blue",
-                         (self.offset_vertical + x, self.offset_horizontal + y,
+                         (OFFSET_VERTICAL + x, OFFSET_HORIZONTAL + y,
                           self.tile_size, self.tile_size), 5)
 
     def highlight_possible_move(self, index):
-        x, y = self.index_to_pixel(index)
-        pygame.draw.circle(self.screen, (46, 204, 113), (int(x + self.calculation.tile_size / 2), int(y + self.calculation.tile_size / 2)),
-                           self.calculation.tile_size / 8)
+        x, y = Calculation.index_to_pixel(index)
+        pygame.draw.circle(self.screen, (46, 204, 113), (int(x + self.tile_size / 2), int(y + self.tile_size / 2)),
+                           TILE_SIZE / 8)
+
     def display_piece(self, piece):
         picture = pygame.image.load(piece.image)
         picture = pygame.transform.scale(picture, (self.tile_size, self.tile_size))
-        self.screen.blit(picture, self.index_to_pixel(piece.pos))
+        self.screen.blit(picture, Calculation.index_to_pixel(piece.pos))
 
-    def index_to_pixel(self, index):
-        x = self.offset_vertical + (index % 8) * self.tile_size
-        y = self.height - (int(index / 8) + 1) * self.tile_size
-
-        return x, y
-
-    def pixel_to_cords(self, x, y):
-        row = int((y - self.offset_vertical) / 8)
-        col = int((x - self.offset_vertical) % 8)
-
-    def print_board(self, board):
+    @staticmethod
+    def print_board(board):
         for i in range(8):
             line = ""
             for j in range(8):
