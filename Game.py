@@ -1,15 +1,14 @@
 import pygame
 
-from HelperClasses.Calculation import Calculation
+from HelperClasses import Calculation
 from Chess import Chess
 from Visuals import Visuals
 
 
 class Game:
-    def __init__(self, width=800, height=800, FEN="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"):
-        self.calculation = Calculation(width, height, 0, 0)
-        self.chess = Chess(FEN)
-        self.visuals = Visuals(self.calculation)
+    def __init__(self, fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"):
+        self.chess = Chess(fen)
+        self.visuals = Visuals()
 
         self.pos_1 = (-1, -1)
         self.pos_2 = (-1, -1)
@@ -27,15 +26,15 @@ class Game:
 
                 if event.type == pygame.MOUSEBUTTONUP:
                     pos = pygame.mouse.get_pos()
-                    if not self.calculation.cords_inside_board(pos):
+                    if not Calculation.cords_inside_board(pos):
                         continue
-                    cord_x, cord_y = self.calculation.pixel_to_cords(pos)
-                    piece = self.chess.get_piece(cord_x, cord_y)
+                    cord_x, cord_y = Calculation.pixel_to_cords(pos)
+                    piece = self.chess.board.get_piece(cord_x, cord_y)
 
-                    destination_square = self.calculation.cords_to_index(cord_x, cord_y)
+                    destination_square = Calculation.cords_to_index(cord_x, cord_y)
                     if destination_square in available_moves:
-                        cord_x, cord_y = self.calculation.pixel_to_cords(self.pos_1)
-                        start_square = self.calculation.cords_to_index(cord_x, cord_y)
+                        cord_x, cord_y = Calculation.pixel_to_cords(self.pos_1)
+                        start_square = Calculation.cords_to_index(cord_x, cord_y)
                         self.chess.move(start_square, destination_square)
                         self.chess.switch_turn()
                         self.visuals.update(self.chess.pieces)
@@ -59,6 +58,5 @@ class Game:
                         moves = self.chess.get_legal_moves(piece)
                         available_moves = [i.destination_square for i in moves]
                         self.visuals.highlight_moves(moves)
-
 
             pygame.display.update()

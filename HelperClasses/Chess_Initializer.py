@@ -1,3 +1,4 @@
+from HelperClasses import Calculation
 from Color import Color
 from Pieces.Bishop import Bishop
 from Pieces.King import King
@@ -8,21 +9,20 @@ from Pieces.Rook import Rook
 
 
 class ChessInitializer:
-    def __init__(self, FEN):
+    def __init__(self, fen):
         self.board = [[None] * 8 for _ in range(8)]
         self.pieces = []
-        self.load_from_FEN(FEN)
+        self.load_from_FEN(fen)
         self.current_turn = Color.WHITE
         self.K = False
         self.Q = False
         self.k = False
         self.q = False
 
-    def load_from_FEN(self, FEN):
+    def load_from_FEN(self, fen):
         x = 0
         y = 0
-        a = "fasdf"
-        fen = FEN.split(' ')
+        fen = fen.split(' ')
         for sign in fen[0]:
             if sign == '/':
                 x = 0
@@ -50,6 +50,7 @@ class ChessInitializer:
 
             elif i == 'q':
                 self.q = True
+
     def add_piece(self, piece_char, x, y):
         color = self.get_color_from_char(piece_char)
 
@@ -65,25 +66,25 @@ class ChessInitializer:
         if piece_char.isupper():
             color = Color.WHITE
         return color
-    def get_piece_from_char(self, piece, color, x, y):
+
+    @staticmethod
+    def get_piece_from_char(piece, color, x, y):
         if piece == 'P':
-            return Pawn(color, self.cords_to_index(x, y))
+            return Pawn(color, Calculation.cords_to_index(x, y))
 
         if piece == 'R':
-            return Rook(color, self.cords_to_index(x, y))
+            return Rook(color, Calculation.cords_to_index(x, y))
 
         if piece == 'K':
-            return King(color, self.cords_to_index(x, y))
+            return King(color, Calculation.cords_to_index(x, y))
 
         if piece == 'N':
-            return Knight(color, self.cords_to_index(x, y))
+            return Knight(color, Calculation.cords_to_index(x, y))
 
         if piece == 'Q':
-            return Queen(color, self.cords_to_index(x, y))
+            return Queen(color, Calculation.cords_to_index(x, y))
 
         if piece == 'B':
-            return Bishop(color, self.cords_to_index(x, y))
+            return Bishop(color, Calculation.cords_to_index(x, y))
 
-    def cords_to_index(self, x, y):
-        index = 56 - y * 8 + (x % 8)
-        return index
+

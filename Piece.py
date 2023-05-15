@@ -8,3 +8,6 @@ class Piece:
         self.pos = pos
         self.directions = directions
         self.is_sliding_piece = is_sliding_piece
+
+    def get_legal_moves(self, board):
+        pass
