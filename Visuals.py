@@ -40,7 +40,9 @@ class Visuals:
                 self.highlight_possible_move(move.destination_square)
 
     def highlight_square(self, pos):
-        x, y = Calculation.get_square_cords_from_cords(pos)
+        print(pos)
+        x, y = Calculation.index_to_pixel(pos)
+         #Calculation.get_square_cords_from_cords(pos)
 
         rect = pygame.Rect(x, y, self.tile_size, self.tile_size)
         surface = pygame.Surface((self.tile_size, self.tile_size), pygame.SRCALPHA)

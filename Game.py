@@ -10,11 +10,11 @@ class Game:
         self.chess = Chess(fen)
         self.visuals = Visuals()
 
-        self.pos_1 = (-1, -1)
-        self.pos_2 = (-1, -1)
+        self.available_moves = []
+        self.selected_square = None
+        self.selected_piece = None
 
     def run(self):
-        available_moves = []
         self.visuals.draw_board()
         self.visuals.draw_pieces(self.chess.pieces)
         while True:
@@ -26,37 +26,46 @@ class Game:
 
                 if event.type == pygame.MOUSEBUTTONUP:
                     pos = pygame.mouse.get_pos()
+
                     if not Calculation.cords_inside_board(pos):
                         continue
-                    cord_x, cord_y = Calculation.pixel_to_cords(pos)
-                    piece = self.chess.board.get_piece(cord_x, cord_y)
 
-                    destination_square = Calculation.cords_to_index(cord_x, cord_y)
-                    if destination_square in available_moves:
-                        cord_x, cord_y = Calculation.pixel_to_cords(self.pos_1)
-                        start_square = Calculation.cords_to_index(cord_x, cord_y)
-                        self.chess.move(start_square, destination_square)
-                        self.chess.switch_turn()
-                        self.visuals.update(self.chess.pieces)
-                        available_moves = []
-                        self.pos_1 = (-1, -1)
-
-                    elif not piece:
-                        self.visuals.update(self.chess.pieces)
-                        continue
-                    elif piece.color != self.chess.current_turn:
-                        continue
-
-                    elif self.pos_1 == pos:
-                        self.pos_1 = (-1, -1)
-                        self.visuals.update(self.chess.pieces)
-
-                    else:
-                        self.visuals.update(self.chess.pieces)
-                        self.pos_1 = pos
-                        self.visuals.highlight_square(self.pos_1)
-                        moves = self.chess.get_legal_moves(piece)
-                        available_moves = [i.destination_square for i in moves]
-                        self.visuals.highlight_moves(moves)
+                    # player clicked on square
+                    self.handle_click(pos)
 
             pygame.display.update()
+
+    def handle_click(self, pos):
+        cord_x, cord_y = Calculation.pixel_to_cords(pos)
+
+        if self.selected_piece:
+            self.selected_square = Calculation.cords_to_index(cord_x, cord_y)
+
+            if self.selected_square in self.available_moves:
+                print("move successful!")
+                self.chess.move(self.selected_piece.pos, self.selected_square)
+                self.chess.switch_turn()
+
+            print("piece deselected")
+            self.available_moves = []
+            self.selected_square = None
+            self.selected_piece = None
+            self.visuals.update(self.chess.pieces)
+
+        else:
+            print("trying to select piece")
+            piece = self.chess.board.get_piece(cord_x, cord_y)
+
+            if not piece:
+                return
+
+            elif piece.color != self.chess.current_turn:
+                return
+
+            else:
+                print(f"selected piece ({piece})")
+                self.selected_piece = piece
+                self.visuals.highlight_square(self.selected_piece.pos)
+                moves = self.chess.get_legal_moves(self.selected_piece)
+                self.available_moves = [i.destination_square for i in moves]
+                self.visuals.highlight_moves(moves)
