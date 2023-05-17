@@ -7,6 +7,8 @@ from Color import Color
 class Pawn(Piece):
     def __init__(self, color, pos):
         image = "pawn_black.png"
+        image = "felix.png"
+
         directions = [-8]
         self.start_rank = 1
 
@@ -26,7 +28,7 @@ class Pawn(Piece):
             new_pos = self.pos + direction + offset
             x, y = Calculation.index_to_cords(new_pos)
             if 0 <= new_pos <= 63 and board.board[y][x] and board.board[y][x].color != current_turn:
-                moves.append(Move(self.pos, new_pos, board[y][x]))
+                moves.append(Move(self.pos, new_pos, board.board[y][x]))
 
         new_pos = self.pos + direction
 
@@ -45,7 +47,6 @@ class Pawn(Piece):
                 moves.append(Move(self.pos, new_pos))
 
         # check for diagonal captures
-
         return moves
 
     def __str__(self):
