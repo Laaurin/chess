@@ -17,7 +17,7 @@ class Pawn(Piece):
 
         super().__init__(color, image, pos, directions, False)
 
-    def get_moves(self, board):
+    def get_legal_moves(self, board, current_turn):
         moves = []
         curr_rank, curr_file = 7 - self.pos // 8, self.pos % 8
         direction = self.directions[0]
@@ -25,13 +25,13 @@ class Pawn(Piece):
         for offset in [-1, 1]:
             new_pos = self.pos + direction + offset
             x, y = Calculation.index_to_cords(new_pos)
-            if 0 <= new_pos <= 63 and board[y][x] and board[y][x].color != self.color:
+            if 0 <= new_pos <= 63 and board.board[y][x] and board.board[y][x].color != current_turn:
                 moves.append(Move(self.pos, new_pos, board[y][x]))
 
         new_pos = self.pos + direction
 
         x, y = Calculation.index_to_cords(new_pos)
-        if not 0 <= new_pos <= 63 or board[y][x]:
+        if not 0 <= new_pos <= 63 or board.board[y][x]:
             return moves  # no valid moves if pawn cannot move forward
 
         moves.append(Move(self.pos, new_pos))
@@ -41,7 +41,7 @@ class Pawn(Piece):
             new_pos = self.pos + 2 * direction
             x, y = Calculation.index_to_cords(new_pos)
             x2, y2 = Calculation.index_to_cords(self.pos + direction)
-            if 0 <= new_pos <= 63 and not board[y][x] and not board[y2][x2]:
+            if 0 <= new_pos <= 63 and not board.board[y][x] and not board.board[y2][x2]:
                 moves.append(Move(self.pos, new_pos))
 
         # check for diagonal captures
