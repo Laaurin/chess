@@ -40,7 +40,6 @@ class Visuals:
                 self.highlight_possible_move(move.destination_square)
 
     def highlight_square(self, pos):
-        print(pos)
         x, y = Calculation.index_to_pixel(pos)
          #Calculation.get_square_cords_from_cords(pos)
 

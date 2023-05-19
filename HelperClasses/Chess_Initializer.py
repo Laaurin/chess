@@ -12,12 +12,13 @@ class ChessInitializer:
     def __init__(self, fen):
         self.board = [[None] * 8 for _ in range(8)]
         self.pieces = []
-        self.load_from_FEN(fen)
         self.current_turn = Color.WHITE
         self.K = False
         self.Q = False
         self.k = False
         self.q = False
+        self.load_from_FEN(fen)
+
 
     def load_from_FEN(self, fen):
         x = 0

@@ -21,7 +21,7 @@ class Piece:
                         break
 
                     if board.board[y][x].color != current_turn:
-                        moves.append(Move(self.pos, self.pos + (i + 1) * direction, board.board[y][x]))
+                        moves.append(Move(self.pos, self.pos + (i + 1) * direction, self, board.board[y][x]))
                         break
 
                 else:
@@ -38,9 +38,9 @@ class Piece:
             x, y = Calculation.index_to_cords(self.pos + direction)
             if board.board[y][x]:
                 if board.board[y][x].color != current_turn:
-                    moves.append(Move(self.pos, self.pos + direction, board.board[y][x]))
+                    moves.append(Move(self.pos, self.pos + direction, self, board.board[y][x]))
             else:
-                moves.append(Move(self.pos, self.pos + direction, None))
+                moves.append(Move(self.pos, self.pos + direction, self, None))
 
         return moves
 

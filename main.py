@@ -1,5 +1,7 @@
 from Game import Game
 
-game = Game("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1")
+castle_testing = "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1"
+
+game = Game()
 
 game.run()
